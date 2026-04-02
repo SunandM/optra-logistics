@@ -36,9 +36,27 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await authAPI.login(email, password);
-      setUser(response.user);
-      return response;
+      // Mock login for UI demonstration
+      if (email && password) {
+        const mockUser = {
+          id: 1,
+          name: 'John Smith',
+          email: email,
+          role: 'admin',
+          avatar: 'JS'
+        };
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        setUser(mockUser);
+        localStorage.setItem('authToken', 'mock-token');
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        
+        return { user: mockUser, token: 'mock-token' };
+      } else {
+        throw new Error('Please enter email and password');
+      }
     } catch (error) {
       throw error;
     }
@@ -46,11 +64,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await authAPI.logout();
+      // Mock logout
+      setUser(null);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
     } catch (error) {
       console.error('Logout error:', error);
-    } finally {
-      setUser(null);
     }
   };
 
